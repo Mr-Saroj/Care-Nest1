@@ -1,31 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Alert } from 'react-native';
+import { Animated, Alert, Linking } from 'react-native';
+import { registerUser } from '../services/authService';
+import { router } from 'expo-router';
+// import { GOOGLE_AUTH_URL } from '../../../services/api';
+import * as WebBrowser from 'expo-web-browser';
 
-// ── Constants & Data ────────────────────────────────────────────
-// Add more roles here later (e.g., 'Elder', 'Doctor', 'Nurse')
 export const ROLES = ['Caregiver'];
 
 export const DROPDOWN_ITEM_HEIGHT = 48;
 const DROPDOWN_DURATION = 200;
 
-export interface RegisterData {
-  name: string;
-  role: string;
-  email: string;
-  mobile: string;
-}
-
-interface UseRegisterOptions {
-  onRegister?: (data: RegisterData) => void;
-}
-
 // ── Hook ────────────────────────────────────────────────────────
-export function useRegister({ onRegister }: UseRegisterOptions = {}) {
+export function useRegister() {
   // Form state
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
   const [email, setEmail] = useState('');
   const [mobile, setMobile] = useState('');
+  const [password, setPassword] = useState('');
 
   // UI state
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -104,21 +96,90 @@ export function useRegister({ onRegister }: UseRegisterOptions = {}) {
   const handleMobileChange = (text: string) =>
     setMobile(text.replace(/[^0-9]/g, ''));
 
-  const handleRegister = () => {
-    if (!name.trim() || !role || !email.trim() || !mobile.trim()) {
-      Alert.alert('Missing Details', 'Please fill in all fields.');
-      return;
+  const handleRegister = async () => {
+    try {
+      console.log('Register Data:', {
+        name,
+        role,
+        email,
+        mobile,
+        password,
+      });
+
+      // Create payload
+      const userData = {
+        name,
+        role: role.toUpperCase(),
+        email,
+        mobile,
+        password,
+      };
+
+      // Call authService
+      const response = await registerUser(userData);
+
+      // Convert backend response JSON
+      const result = await response.json();
+
+      // Backend error
+      if (!response.ok) {
+        Alert.alert(
+          'Registration Failed',
+          result.message || 'Something went wrong'
+        );
+
+        return;
+      }
+
+      // Clear form after success
+      setName('');
+      setRole('');
+      setEmail('');
+      setMobile('');
+      setPassword('');
+
+      // Show backend message
+      Alert.alert(
+        'Success',
+        result.message,
+        [
+          {
+            text: 'OK',
+            onPress: () => router.replace('/auth/login'),
+          },
+        ]
+      );
+
+    } catch (error) {
+      console.error('Registration Error:', error);
+
+      Alert.alert(
+        'Error',
+        'Unable to connect to server'
+      );
     }
-    if (!/^\S+@\S+\.\S+$/.test(email)) {
-      Alert.alert('Invalid Email', 'Please enter a valid email address.');
-      return;
-    }
-    if (mobile.length < 10) {
-      Alert.alert('Invalid Number', 'Please enter a valid mobile number.');
-      return;
-    }
-    onRegister?.({ name, role, email, mobile });
   };
+ 
+
+WebBrowser.maybeCompleteAuthSession();
+
+const handleGoogleRegister = async () => {
+  // try {
+  //   const result = await WebBrowser.openAuthSessionAsync(
+  //     `${GOOGLE_AUTH_URL}/oauth2/authorization/google`,
+  //     'carenest://auth/google-success'  // redirect back to app
+  //   );
+
+  //   if (result.type === 'success') {
+  //     router.replace('/auth/login');
+  //   }
+  // } catch (error) {
+  //   console.error('Google Login Error:', error);
+  //   Alert.alert('Error', 'Unable to open Google Sign In');
+  // }
+  console.log("Google button clicked..");
+  
+};
 
   return {
     // Form state
@@ -128,6 +189,8 @@ export function useRegister({ onRegister }: UseRegisterOptions = {}) {
     email,
     setEmail,
     mobile,
+    password,
+    setPassword,
     // UI state
     dropdownOpen,
     focusedField,
@@ -138,6 +201,7 @@ export function useRegister({ onRegister }: UseRegisterOptions = {}) {
     handleBlur,
     handleMobileChange,
     handleRegister,
+    handleGoogleRegister,
     // Animations
     roleAnim,
     nameAnim,

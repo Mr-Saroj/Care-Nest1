@@ -11,15 +11,9 @@ import {
   useRegister,
   ROLES,
   DROPDOWN_ITEM_HEIGHT,
-  RegisterData,
 } from '../hooks/useRegister';
 
-interface RegisterFormProps {
-  onGoogleRegister?: () => void;
-  onRegister?: (data: RegisterData) => void;
-}
-
-export default function RegisterForm({ onGoogleRegister, onRegister }: RegisterFormProps) {
+export default function RegisterForm() {
   const {
     name,
     setName,
@@ -27,6 +21,8 @@ export default function RegisterForm({ onGoogleRegister, onRegister }: RegisterF
     email,
     setEmail,
     mobile,
+    password,
+    setPassword,
     dropdownOpen,
     focusedField,
     toggleDropdown,
@@ -35,6 +31,7 @@ export default function RegisterForm({ onGoogleRegister, onRegister }: RegisterF
     handleBlur,
     handleMobileChange,
     handleRegister,
+    handleGoogleRegister,
     roleAnim,
     nameAnim,
     emailAnim,
@@ -45,7 +42,7 @@ export default function RegisterForm({ onGoogleRegister, onRegister }: RegisterF
     dropdownHeight,
     dropdownOpacity,
     translateY,
-  } = useRegister({ onRegister });
+  } = useRegister();
 
   return (
     <View className="w-full">
@@ -192,13 +189,49 @@ export default function RegisterForm({ onGoogleRegister, onRegister }: RegisterF
         </View>
       </Animated.View>
 
+      <Animated.View>
+        {/* Password Input */}
+        <View
+          className="mt-4 h-[54px] flex-row items-center rounded-[14px] border-[1.5px] bg-white px-4"
+          style={{
+            borderColor:
+              focusedField === 'password'
+                ? '#1E88E5'
+                : '#E2E8F0'
+          }}
+        >
+          <Ionicons
+            name="lock-closed-outline"
+            size={20}
+            color={
+              focusedField === 'password'
+                ? '#1E88E5'
+                : '#94A3B8'
+            }
+          />
+
+          <TextInput
+            className="ml-3 flex-1 py-0 text-[15px] text-[#1E293B]"
+            placeholder="Password"
+            placeholderTextColor="#94A3B8"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={true}
+            autoCapitalize="none"
+            autoCorrect={false}
+            onFocus={() => handleFocus('password')}
+            onBlur={handleBlur}
+          />
+        </View>
+      </Animated.View>
+
       {/* Register Button */}
       <Animated.View
         style={{ opacity: btnAnim, transform: [{ translateY: translateY(btnAnim) }] }}
       >
         <TouchableOpacity
           activeOpacity={0.85}
-          onPress={handleRegister}
+          onPress={() => handleRegister()}
           className="mt-7 w-full items-center justify-center rounded-2xl bg-[#E53935] py-4"
           style={{
             shadowColor: '#E53935',
@@ -232,7 +265,7 @@ export default function RegisterForm({ onGoogleRegister, onRegister }: RegisterF
       >
         <TouchableOpacity
           activeOpacity={0.85}
-          onPress={() => onGoogleRegister?.()}
+          onPress={() => handleGoogleRegister()}
           className="w-full flex-row items-center justify-center rounded-2xl border-[1.5px] border-[#E2E8F0] bg-white py-[15px]"
         >
           <Ionicons name="logo-google" size={20} color="#DB4437" />

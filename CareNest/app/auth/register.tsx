@@ -16,12 +16,12 @@ import { Ionicons } from '@expo/vector-icons';
 import RegisterForm from '../../src/features/auth/components/RegisterForm';
 
 export default function Register() {
-  const fadeAnim     = useRef(new Animated.Value(0)).current;
-  const backAnim     = useRef(new Animated.Value(0)).current;
-  const logoAnim     = useRef(new Animated.Value(0)).current;
-  const titleAnim    = useRef(new Animated.Value(0)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const backAnim = useRef(new Animated.Value(0)).current;
+  const logoAnim = useRef(new Animated.Value(0)).current;
+  const titleAnim = useRef(new Animated.Value(0)).current;
   const subtitleAnim = useRef(new Animated.Value(0)).current;
-  const loginAnim    = useRef(new Animated.Value(0)).current;
+  const loginAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const spring = (anim: Animated.Value, delay = 0) =>
@@ -45,19 +45,6 @@ export default function Register() {
 
   const translateY = (anim: Animated.Value) =>
     anim.interpolate({ inputRange: [0, 1], outputRange: [30, 0] });
-
-  const handleRegister = (data: {
-    name: string;
-    role: string;
-    email: string;
-    mobile: string;
-  }) => {
-    console.log('Register:', data);
-  };
-
-  const handleGoogleRegister = () => {
-    console.log('Continue with Google');
-  };
 
   return (
     <SafeAreaView className="flex-1 bg-[#F8FAFF]">
@@ -139,10 +126,7 @@ export default function Register() {
             </Animated.View>
 
             {/* Register Form */}
-            <RegisterForm
-              onRegister={handleRegister}
-              onGoogleRegister={handleGoogleRegister}
-            />
+            <RegisterForm />
 
             {/* Login Link */}
             <Animated.View

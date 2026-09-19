@@ -1,4 +1,5 @@
 import React from 'react';
+import { ActivityIndicator } from 'react-native'
 import {
   View,
   TextInput,
@@ -15,6 +16,7 @@ export default function LoginForm() {
     password,
     setPassword,
     showPassword,
+    loading,
     togglePasswordVisibility,
     handleLogin,
     handleGoogleLogin,
@@ -69,9 +71,14 @@ export default function LoginForm() {
       {/* Login Button */}
       <TouchableOpacity
         onPress={handleLogin}
+        disabled={loading}
         className="mt-6 w-full items-center justify-center rounded-2xl bg-[#E53935] py-4"
       >
-        <Text className="text-base font-semibold text-white">Login</Text>
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text className="text-base font-semibold text-white">Login</Text>
+        )}
       </TouchableOpacity>
 
       {/* Divider */}

@@ -8,10 +8,12 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.carenest.model.Elder;
 import com.carenest.model.User;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+
 
 @Service
 public class JwtService {
@@ -65,4 +67,34 @@ public class JwtService {
 
                 .compact();
     }
+    public String generateElderToken(Elder elder) {
+
+    return Jwts.builder()
+
+            // Elder ID becomes JWT subject
+            .subject(elder.getId())
+
+            // Elder information
+            .claim("role", elder.getRole().name())
+            .claim("mobile", elder.getMobile())
+            .claim(
+                    "caregiverEmail",
+                    elder.getCaregiverEmail()
+            )
+
+            // Token timing
+            .issuedAt(new Date())
+
+            .expiration(
+                    new Date(
+                            System.currentTimeMillis()
+                                    + jwtExpiration
+                    )
+            )
+
+            // Sign JWT
+            .signWith(getKey())
+
+            .compact();
+}
 }

@@ -25,15 +25,16 @@ export async function apiRequest(
   };
 
   // 3. Attach JWT token
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
+  if (token && !path.startsWith('/auth/')) {
+  headers['Authorization'] = `Bearer ${token}`;
+}
 
   // console.log(
   //   "AUTHORIZATION HEADER:",
   //   headers['Authorization']
   // );
 
+  
   // 4. Make the request
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,

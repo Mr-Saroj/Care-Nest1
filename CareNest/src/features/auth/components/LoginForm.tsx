@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useLogin } from '../hooks/useLogin';
+import { router } from 'expo-router/build/exports';
 
 export default function LoginForm() {
   const {
@@ -99,6 +100,22 @@ export default function LoginForm() {
         <Ionicons name="logo-google" size={20} color="#DB4437" />
         <Text className="ml-2.5 text-[15px] font-semibold text-[#1E293B]">
           Continue with Google
+        </Text>
+      </TouchableOpacity>
+      {/* Continue as Elder */}
+      <TouchableOpacity
+        activeOpacity={0.85}
+        onPress={() => router.push('/auth/elderlogin')}
+        className="mt-4 w-full flex-row items-center justify-center rounded-2xl border-[1.5px] border-[#E2E8F0] bg-[#F8FAFC] py-[15px]"
+      >
+        <Ionicons
+          name="person-outline"
+          size={20}
+          color="#64748B"
+        />
+
+        <Text className="ml-2.5 text-[15px] font-semibold text-[#334155]">
+          Continue as Elder
         </Text>
       </TouchableOpacity>
 

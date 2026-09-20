@@ -47,14 +47,20 @@ public class SecurityConfig {
                                                 // Public APIs
                                                 .requestMatchers(
                                                                 "/api/auth/register",
-                                                                "/api/auth/login")
+                                                                "/api/auth/login",
+                                                                "/api/elder-auth/verify-number",
+                                                                "/api/elder-auth/login")
                                                 .permitAll()
 
-                                                // Only CAREGIVER can access elder APIs
+                                                // Caregiver APIs
                                                 .requestMatchers("/api/elders/**")
                                                 .hasAuthority("CAREGIVER")
 
-                                                // Everything else requires authentication
+                                                // Elder APIs
+                                                .requestMatchers("/api/elder/**")
+                                                .hasAuthority("ELDER")
+
+                                                // Everything else
                                                 .anyRequest()
                                                 .authenticated())
 

@@ -97,70 +97,55 @@ export function useRegister() {
     setMobile(text.replace(/[^0-9]/g, ''));
 
   const handleRegister = async () => {
-    try {
-      console.log('Register Data:', {
-        name,
-        role,
-        email,
-        mobile,
-        password,
-      });
+  try {
+    console.log('Register Data:', {
+      name,
+      role,
+      email,
+      mobile,
+      password,
+    });
 
-      // Create payload
-      const userData = {
-        name,
-        role: role.toUpperCase(),
-        email,
-        mobile,
-        password,
-      };
+    const userData = {
+      name: name.trim(),
+      role: role.toUpperCase(),
+      email: email.trim().toLowerCase(),
+      mobile: mobile.trim(),
+      password,
+    };
 
-      // Call authService
-      const response = await registerUser(userData);
+    console.log('REGISTER PAYLOAD:', userData);
 
-      // Convert backend response JSON
-      const result = await response.json();
+    const result = await registerUser(userData);
 
-      // Backend error
-      if (!response.ok) {
-        Alert.alert(
-          'Registration Failed',
-          result.message || 'Something went wrong'
-        );
+    console.log('REGISTER RESPONSE:', result);
 
-        return;
-      }
+    setName('');
+    setRole('');
+    setEmail('');
+    setMobile('');
+    setPassword('');
 
-      // Clear form after success
-      setName('');
-      setRole('');
-      setEmail('');
-      setMobile('');
-      setPassword('');
+    Alert.alert(
+      'Success',
+      result.message,
+      [
+        {
+          text: 'OK',
+          onPress: () => router.replace('/auth/login'),
+        },
+      ]
+    );
 
-      // Show backend message
-      Alert.alert(
-        'Success',
-        result.message,
-        [
-          {
-            text: 'OK',
-            onPress: () => router.replace('/auth/login'),
-          },
-        ]
-      );
+  } catch (error: any) {
+    console.log('Registration Error:', error.message);
 
-    } catch (error) {
-      console.error('Registration Error:', error);
-
-      Alert.alert(
-        'Error',
-        'Unable to connect to server'
-      );
-    }
-  };
- 
-
+    Alert.alert(
+      'Registration Failed',
+      error.message || 'Unable to register'
+    );
+  }
+};
 WebBrowser.maybeCompleteAuthSession();
 
 const handleGoogleRegister = async () => {

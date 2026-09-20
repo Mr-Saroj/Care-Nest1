@@ -90,7 +90,7 @@ public class AuthService {
         // Find user
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ApiException(
-                        "Email or password is incorrect",
+                        "Email not found",
                         HttpStatus.UNAUTHORIZED
                 ));
 
@@ -104,7 +104,7 @@ public class AuthService {
         if (!passwordMatches) {
 
             throw new ApiException(
-                    "Email or password is incorrect",
+                    "Password is incorrect",
                     HttpStatus.UNAUTHORIZED
             );
         }

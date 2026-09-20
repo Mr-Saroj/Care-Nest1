@@ -17,21 +17,18 @@ public class EmailService {
             String caregiverEmail,
             String otp) {
 
-        SimpleMailMessage message =
-                new SimpleMailMessage();
+        SimpleMailMessage message = new SimpleMailMessage();
 
         message.setTo(caregiverEmail);
 
         message.setSubject(
-                "CareNest Elder Login OTP"
-        );
+                "CareNest Elder Login OTP");
 
         message.setText(
                 "Your CareNest elder login OTP is: "
                         + otp
                         + "\n\n"
-                        + "This OTP is valid for 5 minutes."
-        );
+                        + "This OTP is valid for 5 minutes.");
 
         mailSender.send(message);
     }
